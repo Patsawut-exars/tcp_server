@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <chrono>
+#include <ctime>
 
 /* データサイズ定義 */
 #define BYTESIZE_uint8 1
@@ -35,7 +36,7 @@ const std::string currentDateTime() {
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 using std::chrono::seconds;
-using std::chrono::systermclock;
+using std::chrono::system_clock;
 /* 現在時間取得関数(ms)：T.PATSAWUT*/
 int main() {
     signal(SIGPIPE, SIG_IGN);
@@ -89,14 +90,14 @@ int main() {
                 break;//なにもこないと接続を切れる
             }
             buf[n] = '\0';
-            for (int i = 0;i < 10; i++)
-            {
-                cout << "New data from client: " << buf[i] << endl;
-            }
+            //for (int i = 0;i < 10; i++)
+           // {
+                cout << "New data from client: " << *buf << endl;
+           //}
             /* 現在時間取得 */
             //std::cout << currentDateTime() << std::endl;
             auto millisec=duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-            std::cout<<"milliseconds:"<<millsec<<endl;
+            std::cout<<"milliseconds:"<<millisec<<endl;
             /* 現在時間取得 */
 
             /* brake poinnt for debag */
