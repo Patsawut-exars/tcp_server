@@ -5,6 +5,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/time.h>
+#include <chrono>
 
 /* データサイズ定義 */
 #define BYTESIZE_uint8 1
@@ -18,6 +19,7 @@
 
 using namespace std;
 
+
 /* 現在時間取得関数*/
 const std::string currentDateTime() {
     time_t     now = time(0);
@@ -29,6 +31,12 @@ const std::string currentDateTime() {
 }
 /* 現在時間取得関数 */
 
+/* 現在時間取得関数(ms)：T.PATSAWUT*/
+using std::chrono::duration_cast;
+using std::chrono::milliseconds;
+using std::chrono::seconds;
+using std::chrono::systermclock;
+/* 現在時間取得関数(ms)：T.PATSAWUT*/
 int main() {
     signal(SIGPIPE, SIG_IGN);
     int ln = socket(AF_INET, SOCK_STREAM, 0);//ソケットのアドレス
@@ -86,7 +94,9 @@ int main() {
                 cout << "New data from client: " << buf[i] << endl;
             }
             /* 現在時間取得 */
-            std::cout << currentDateTime() << std::endl;
+            //std::cout << currentDateTime() << std::endl;
+            auto millisec=duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+            std::cout<<"milliseconds:"<<millsec<<endl;
             /* 現在時間取得 */
 
             /* brake poinnt for debag */
