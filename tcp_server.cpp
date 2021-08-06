@@ -22,18 +22,6 @@
 
 using namespace std;
 
-
-/* 現在時間取得関数*/
-const std::string currentDateTime() {
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
-    tstruct = *localtime(&now);
-    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
-    return buf;
-}
-/* 現在時間取得関数 */
-
 /* 現在時間取得関数(ms)：T.PATSAWUT*/
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
@@ -77,7 +65,8 @@ int main() {
     // Fileを開く
     myFile_Handler.open("log_file.txt");
     myFile_Handler << "データ送受信ログ" << endl;
-    return 0;
+    myFile_Handler.close();
+
     while (true) {
         cout << "Will accept" << endl;
         int conn = accept(ln, 0, 0);//Clientと接続ため関数
@@ -89,7 +78,6 @@ int main() {
         while (!fail) {
 
             int n = read(conn, &buf, sizeof(buf));//MATLABから受信関数
-            //int n = recv(conn, &buf, sizeof(buf) - 1, 0);
             if (n < 0) {
                 perror("recv() error");
                 break;//受信がエラーを出ると接続を切れる
@@ -103,23 +91,19 @@ int main() {
                 cout << "New data from client: " << *buf << endl;
            //}
             /* 現在時間取得 */
-            //std::cout << currentDateTime() << std::endl;
             auto millisec=duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
             std::cout<<"milliseconds:"<<millisec<<endl;
             /* 現在時間取得 */
-                // ファイルに書き込む
-            myFile_Handler << "データ：" << *buf<< ":"<<millisec<< endl;
+                // log出力
+                    myFile_Handler.open("log_file.txt",ios::app);
+                    myFile_Handler << "データ：" << *buf<< ":"<< millisec << endl;
+                    myFile_Handler.close();
+                //log出力
 
-
-            /* brake poinnt for debag */
-            //break;
-            /* brake poinnt for debag */
             int total = n;
             int written = 0;
             while (written < total + 1) {
-                //sleep(10);//ディレー
-                int n = write(conn,bufb,bytesize*5);//MATLABに送信関数
-                //int n = send(conn, buf + written, total + 1 - written, 0);
+                int n = write(conn,bufb,bytesize*5);//MATLABに送信関数                
                 if (n < 0) 
                 {
                     perror("send() error");
