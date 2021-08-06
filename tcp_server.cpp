@@ -7,6 +7,8 @@
 #include <sys/time.h>
 #include <chrono>
 #include <ctime>
+#include <fstream>
+
 
 /* データサイズ定義 */
 #define BYTESIZE_uint8 1
@@ -69,7 +71,13 @@ int main() {
     cout << "Socked num: " << ln << endl;
     double buf[10] = {0};//受け取る変数定義（変数名、サイズ）
     double  bufb[5] = {1,2,3,4,5};//送り出す変数定義（変数名、サイズ）
-
+    
+    //ファイル変数の構造体宣言
+    ofstream myFile_Handler;
+    // Fileを開く
+    myFile_Handler.open("log_file.txt");
+    myFile_Handler << "データ送受信ログ" << endl;
+    return 0;
     while (true) {
         cout << "Will accept" << endl;
         int conn = accept(ln, 0, 0);//Clientと接続ため関数
@@ -99,6 +107,9 @@ int main() {
             auto millisec=duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
             std::cout<<"milliseconds:"<<millisec<<endl;
             /* 現在時間取得 */
+                // ファイルに書き込む
+            myFile_Handler << "データ：" << *buf<< ":"<<millisec<< endl;
+
 
             /* brake poinnt for debag */
             //break;
@@ -119,8 +130,11 @@ int main() {
             }
         }
         cout << "Client disconnected" << endl;
+            
+    
     }
-
+    // Fileを閉じる
+    myFile_Handler.close();
     return 0;
 }
 
